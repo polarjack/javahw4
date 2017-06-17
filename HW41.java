@@ -3,6 +3,8 @@ package jp2017;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import com.sun.imageio.spi.RAFImageInputStreamSpi;
+
 
 
 public class HW41 {
@@ -145,8 +147,29 @@ public static class Rational extends Number implements Comparable<Rational> {
 	 */
 	public static Rational valueOf(String str) throws java.lang.NumberFormatException {
 		//TODO  replace the dummy assignments blow with your code here !!
+		
 		String n = null;
 		String d = null;
+		try{
+			if(str.indexOf(' ') > 0) {
+				error("%s is not a valid format of a rational number.", str);
+			}
+		}
+		catch(Exception e) {
+			error("%s is not a valid format of a rational number.", str);
+		}
+		int lineplace = third.indexOf('/');      
+    System.out.println(third.indexOf('/'));  
+    if(lineplace > 0) {               
+    	String front = third.substring(0, lineplace);
+    	String back = third.substring(lineplace+1, third.length());                                                                
+			n = front;
+			n = back;	
+		}
+    else {
+			n = str;
+			d = "1";
+		}
 		return new Rational(n, d) ;
 	}
 	
@@ -221,6 +244,9 @@ public static class Rational extends Number implements Comparable<Rational> {
 	 */
 	public boolean equals(Object o) {
 		//TODO replace the dummy return by your code here!!
+		if(this.getNumerator() == o.getNumerator() && this.denominator() == this.denominator()) {
+			return true;	
+		}
 		return false;
 	}
 
@@ -231,7 +257,28 @@ public static class Rational extends Number implements Comparable<Rational> {
 	@Override
 	public int compareTo(Rational o) {
 		//TODO　replace the dummy return by your code here!!
-		return 0;
+		if(this.getNumerator() == o.getNumerator() && this.denominator() == this.denominator()) {
+			return 0;	
+		}
+		else if(this.getNumerator() == o.getNumerator() && this.denominator() > this.denominator()) {
+			return -1;	
+		}
+		else if(this.getNumerator() == o.getNumerator() && this.denominator() < this.denominator()) {
+			return 1;	
+		}
+		else if(this.getNumerator() > o.getNumerator()) {
+			return 1;
+		}
+		else if(this.getNumerator() > o.getNumerator() && this.denominator() > o.denominator()) {
+			return -1;
+		}
+		else if(this.getNumerator() > o.getNumerator() && this.denominator() < o.denominator()) {
+			return 1;
+		}
+		else {
+			return -1;
+		}
+		
 	}
 	
 	/**
@@ -241,7 +288,12 @@ public static class Rational extends Number implements Comparable<Rational> {
 	 */
 	public boolean lt(Rational r) {
 		//TODO replace the dummy return by your code here!!
-		return false;
+		if(this.compareTo(r) >= 0) {
+			return false;
+		}
+		else {
+			return true;
+		}		
 	}
 
 	////////////////////////////////////////////////////////////////
@@ -256,6 +308,7 @@ public static class Rational extends Number implements Comparable<Rational> {
 	 */
 	public Rational add(Rational r2) {
 		//TODO add your code here!
+		
 		return null;
 	}
 
@@ -321,7 +374,13 @@ public static class Rational extends Number implements Comparable<Rational> {
 	public Rational negate() {
 		
 		//TODO add your code here!
-		return ZERO;
+		BigInteger temp = this.getNumerator();
+		temp = temp.negate();
+		BigInteger down = this.getDenominator();
+		down = down.negate();
+		
+		Rational toreturn = new Rational(temp, down);
+		return toreturn;
 	}
 	
 	/**
@@ -330,9 +389,18 @@ public static class Rational extends Number implements Comparable<Rational> {
 	 * @return | this |
 	 */
 	public Rational abs() {
-		
+
 		//TODO add your code here!
-		return null;
+		BigInteger temp = this.getNumerator();
+		if(temp.compareTo(BigInteger.ZERO) < 0) {
+			temp = temp.negate();
+		}
+		BigInteger down = this.getDenominator();
+		if(down.compareTo(BigInteger.ZERO) < 0) {
+			down = down.negate();
+		}
+		Rational toreturn = new Rational(temp, down);
+		return toreturn;
 	}
 
 	/**
@@ -342,7 +410,29 @@ public static class Rational extends Number implements Comparable<Rational> {
 
 	public BigInteger floor() {
 		//TODO add your code here!
-		return BigInteger.ZERO;
+		BigInteger output = BigInteger.valueOf(0);
+		BigInteger up = this.getNumerator();
+		BigInteger down = this.getDenominator();
+		boolean ifup = false, ifdown = false;
+		if(up.compareTo(BigInteger.ZERO) < 0) {
+			up = up.negate();
+			ifup = true;
+		}
+		if(down.compareTo(BigInteger.ZERO) < 0) {
+			down = down.negate();
+			ifdown = true;
+		}
+		
+		output = up.divide(down);
+
+		if(ifup != down) {
+			output = output.add(BigInteger.valueOf(1);
+			output = output.negate();
+			return output;
+		}
+		else {
+			return output;
+		}
 	}
 
 	/**
@@ -352,7 +442,29 @@ public static class Rational extends Number implements Comparable<Rational> {
 
 	public BigInteger ceiling() {
 		//TODO add your code here!
-		return BigInteger.ZERO;
+		BigInteger output = BigInteger.valueOf(0);
+		BigInteger up = this.getNumerator();
+		BigInteger down = this.getDenominator();
+		boolean ifup = false, ifdown = false;
+		if(up.compareTo(BigInteger.ZERO) < 0) {
+			up = up.negate();
+			ifup = true;
+		}
+		if(down.compareTo(BigInteger.ZERO) < 0) {
+			down = down.negate();
+			ifdown = true;
+		}
+		
+		output = up.divide(down);
+
+		if(ifup != down) {
+			output = output.negate();
+			return output;
+		}
+		else {
+			output = output.add(BigInteger.valueOf(1);
+			return output;
+		}
 	}
 	
 	@Override 
@@ -380,7 +492,10 @@ public static class Rational extends Number implements Comparable<Rational> {
 	 */
 	public double doubleValue() {
 		// TODO add your code here!
-		return 0;
+		double up = this.getNumerator().doubleValue();
+		double down = this.getDenominator().doubleValue();
+		double result = up/down;
+		return result;
 	}
 
 	/**
@@ -391,7 +506,10 @@ public static class Rational extends Number implements Comparable<Rational> {
 	 */
 	public float floatValue() {
 		// TODO add your code here!
-		return 0;
+		float up = this.getNumerator().floatValue();
+		float down = this.getDenominator().floatValue();
+		float result = up/down;
+		return result;
 	}
 
 	/*
